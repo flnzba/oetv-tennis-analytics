@@ -111,7 +111,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - florian@fzeba.com
+Florian Zeba - florian@fzeba.com
 
 Project Link: [https://github.com/flnzba/oetv-tennis-ranking-scraper](https://github.com/flnzba/oetv-tennis-ranking-scraper)
 
