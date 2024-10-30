@@ -107,7 +107,7 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+The Chrome Drivers are subject to the according licenses (see folders). The project has no license yet.
 
 ## Contact
 
