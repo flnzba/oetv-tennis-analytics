@@ -1,113 +1,78 @@
-# ÖTV Tennis Ranking Scraper
+# Data Visualization App with Streamlit
 
-Welcome to the ÖTV Tennis Ranking Scraper project! This repository contains a Python script that automates the extraction of tennis player rankings from the ÖTV (Österreichischer Tennisverband) website. The data is then stored in a SQLite database and visualized using matplotlib to show the distribution of players across different rankings.
+This application is designed to scrape ranking data from the ÖTV website, store it locally in a SQLite database, and display the data through a bar chart on a Streamlit web app. This setup provides an easy-to-use interface for analyzing and visualizing the data, all containerized with Docker for easy deployment and scalability.
 
-## Project Overview
+## Features
 
-This project is designed to demonstrate web scraping using Selenium, data storage with SQLite, and data visualization with matplotlib. It navigates through the dynamic loading mechanism of the ÖTV website, where additional data is fetched by interacting with the web page.
+- **Web Scraping**: Automatically scrapes data from the specified ÖTV rankings webpage.
+- **Data Storage**: Uses SQLite for efficient local data storage.
+- **Data Visualization**: Visualizes the data in a bar chart format using Matplotlib.
+- **Web Application**: Streamlit framework provides a user-friendly web interface.
+- **Docker Support**: Everything is dockerized for easy setup and portability.
 
-### Features
+## Prerequisites
 
-- **Web Scraping with Selenium:** Automates a web browser to interact with JavaScript-heavy web pages.
-- **Data Storage:** Utilizes SQLite to store the scraped data.
-- **Data Visualization:** Generates bar plots to analyze the frequency of different tennis rankings.
-
-## Getting Started
-
-### Prerequisites
-
-Before you begin, ensure you have the following installed if you are not using Docker:
+Before you begin, ensure you have the following installed on your system:
 - Python 3.8+
-- pip (Python package installer)
-- Google Chrome and ChromeDriver if running the script manually
+- Docker (optional, for containerized deployment)
 
-### Installation
+## Installation
 
-#### Using Docker
+### Option 1: Manual Installation
 
-1. **Build the Docker image**
-
-   Navigate to the directory containing the Dockerfile and run:
-
+1. **Clone the Repository**
    ```bash
-   docker build -t tennis-ranking-scraper .
+   git clone https://github.com/flnzba/oetv-tennis-analytics
+   cd yourrepository
    ```
 
-2. **Run the container**
-
-   After the image is built, you can run the container with:
-
-   ```bash
-   docker run -d -p 4000:80 tennis-ranking-scraper
-   ```
-
-   This command runs the scraping script and makes the container's port 80 available on local port 4000.
-
-3. **Verify that the Docker container is running**
-   
-   ```bash
-   docker ps
-   ```
-
-#### Manual Setup
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/yourusername/oetv-tennis-ranking-scraper.git
-   cd oetv-tennis-ranking-scraper
-   ```
-
-2. **Set up a virtual environment (optional but recommended)**
-
+2. **Set Up a Virtual Environment** (optional, but recommended)
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
    ```
 
-3. **Install the requirements**
-
+3. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Download the WebDriver**
-
-   Ensure you have Google Chrome and the ChromeDriver installed that matches your Chrome version. Update the path to ChromeDriver in the script if necessary.
-
-### Configuration
-
-- **Docker users**: The Dockerfile sets environment variables and copies all necessary files.
-- **Manual setup**: Edit the `scraper.py` file to include the path to your WebDriver:
-
-   ```python
-   chromedriver_path = '/path/to/your/chromedriver'
+4. **Run the Application**
+   ```bash
+   streamlit run app.py
    ```
+   Access the app at `http://localhost:8501`.
+
+### Option 2: Docker Installation
+
+1. **Build the Docker Image**
+   ```bash
+   docker build -t oetv-tennis-streamlit .
+   ```
+
+2. **Run the Container**
+   ```bash
+   docker run -p 8501:8501 oetv-tennis-streamlit
+   ```
+   Access the app at `http://localhost:8501`.
 
 ## Usage
 
-- **Docker**: The container will automatically run `crawl-data.py` on startup.
-- **Manual**: Run the scraper script using the following command:
-
-   ```bash
-   python crawl-data.py
-   ```
-
-After execution, you'll find the data in a SQLite database named `players.db`, and a plot will be displayed showing the distribution of player rankings.
-
-## Visualization Example
-
-![Bar Chart of Player Rankings](/path/to/bar_chart.png)
-
-This bar chart shows the number of players for each ranking category obtained from the ÖTV website.
+After launching the app, the interface will allow you to view the bar chart representing the frequency of rankings from the ÖTV website. Data is refreshed each time the application is restarted, ensuring you always have the latest rankings displayed.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue if you have suggestions or improvements.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-The Chrome Drivers are subject to the according licenses (see folders). The project has no license yet.
+...
 
 ## Contact
 
