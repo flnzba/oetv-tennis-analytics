@@ -10,6 +10,11 @@ This application is designed to scrape ranking data from the ÖTV website, store
 - **Web Application**: Streamlit framework provides a user-friendly web interface.
 - **Docker Support**: Everything is dockerized for easy setup and portability.
 
+## Analytics
+
+1. Normalized Ranking
+2. If I have an ITN of X then I am better then Y% of players
+
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
