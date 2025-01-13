@@ -14,6 +14,9 @@ This application is designed to scrape ranking data from the ÖTV website, store
 
 1. Normalized Ranking
 2. If I have an ITN of X then I am better then Y% of players
+3. If I have an ITN of X then I am better then Y% of players in my age group
+4. If I have an ITN of X then I am better then Y% of players in my region
+5. Change of number of players since last Date X
 
 ## Prerequisites
 
@@ -86,3 +89,7 @@ Florian Zeba - florian@fzeba.com
 Project Link: [https://github.com/flnzba/oetv-tennis-ranking-scraper](https://github.com/flnzba/oetv-tennis-ranking-scraper)
 
 ---
+
+# Side Info
+- app.js is a testing script to fetch directly via js to make sure the response is correct
+- app.py is the main script to fetch the data and store it in a sqlite database

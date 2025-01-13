@@ -1,0 +1,1 @@
+Error: Failed to perform, curl: (1) Protocol "ttps" not supported. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
