@@ -115,3 +115,13 @@ Project Link: [https://github.com/flnzba/oetv-tennis-ranking-scraper](https://gi
 - sqlite JSON Functions: https://www.sqlite.org/json1.html
 - pydantic: https://docs.pydantic.dev/2.10/
 - matplotlib: https://matplotlib.org/stable/contents.html
+
+## TODOs
+- [x] Create a Streamlit App
+- [x] Create a SQLite Database
+- [ ] Pydantic -> Load Data directly to DB -> JSON Formatting problems
+   - [ ] Load Data from Db instead of JSON
+   - [x] "O'Brien" is destroying the json file
+   - [x] "D'ans" is destroying the json file
+- [ ] Optimize Main Loop to crawl dynamically more than 8000 items
+- [ ] Add more visualizations

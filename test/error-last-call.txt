@@ -15,3 +15,8 @@ Error: 'str' object has no attribute 'items'
 Error: too many values to unpack (expected 2) 
 Error: 0 
 Error: 'dict_values' object is not subscriptable 
+Error: Failed to perform, curl: (23) Failure writing output to destination, passed 17 returned 0. See https://curl.se/libcurl/c/libcurl-errors.html first for more details. 
+Error: Failed to perform, curl: (23) Failure writing output to destination, passed 17 returned 0. See https://curl.se/libcurl/c/libcurl-errors.html first for more details. 
+Error: property 'text' of 'Response' object has no setter 
+Error: 'dict' object has no attribute 'replace' 
+Error: 'str' object has no attribute 'text' 

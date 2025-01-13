@@ -30,6 +30,7 @@ headers = {
 
 referer = "https://www.oetv.at/rangliste/"
 
+
 # error handling -> for better print of error
 # last json response is saved in ./test/oetv.json
 # last error is saved in ./test/error-last-call.txt
@@ -37,36 +38,86 @@ referer = "https://www.oetv.at/rangliste/"
 
 
 def main():
+    all_rankings = []
+    start = 0
+
     try:
         r = requests.get(url, headers=headers, referer=referer, impersonate="chrome")
         # c = requests.Session()
         # print(r.text)
 
-        if r.status_code == 200:
-            with open("../test/oetv.json", "w") as file:
-                file.write(r.text)
+        while start < 8000:
+            paginated_url = url.replace("firstResult=0", f"firstResult={start}")
+            r = requests.get(
+                paginated_url, headers=headers, referer=referer, impersonate="chrome"
+            )
 
-            # Parse the JSON response
-            rankings_data = json.loads(r.text)
-            # iterate into the second object to get the data object
-            d = list(rankings_data.values())[1]
-            # print(d)
-            # iterate into the "ranking" object to get the players
-            rankings_data = list(d.values())[3]
+            if r.status_code == 200:
+                # # temporary file
+                # with open("../test/oetv.json", "w") as file:
+                #     file.write(r.text)
 
-            # Save the JSON response to a file
-            with open("../test/oetv-rankings.json", "w") as file:
-                rankings_data_write = str(rankings_data).replace("'", '"')
-                rankings_data_write = rankings_data_write.replace("False", '"False"')
-                file.write(str(rankings_data_write))
+                # Parse the JSON response
+                # iterate into the data objects
+                rankings_data = json.loads(r.text)
+                d = list(rankings_data.values())[1]
+                rankings_data = list(d.values())[3]
 
-        else:
-            handle_error(r.status_code)
+                if not rankings_data:
+                    break
 
+                all_rankings.extend(rankings_data)
+                start += 100
+
+                print(f"Item {start} fetched")
+            else:
+                handle_error(r.status_code)
+                break
+
+        # Save the JSON response to a file
+        with open("../test/oetv-rankings.json", "w") as file:
+            rankings_data_write = str(all_rankings)
+            rankings_data_write = rankings_data_write.replace("False", '"False"')
+            rankings_data_write = rankings_data_write.replace("True", '"True"')
+            rankings_data_write = rankings_data_write.replace("O'Brien", "O Brien")
+            rankings_data_write = rankings_data_write.replace("D'ans", "D Ans")
+            rankings_data_write = rankings_data_write.replace("'", '"')
+            file.write(rankings_data_write)
     except Exception as e:
         handle_error(e)
 
-    return rankings_data
+
+# def main():
+#     try:
+#         r = requests.get(url, headers=headers, referer=referer, impersonate="chrome")
+#         # c = requests.Session()
+#         # print(r.text)
+
+#         if r.status_code == 200:
+#             with open("../test/oetv.json", "w") as file:
+#                 file.write(r.text)
+
+#             # Parse the JSON response
+#             rankings_data = json.loads(r.text)
+#             # iterate into the second object to get the data object
+#             d = list(rankings_data.values())[1]
+#             # print(d)
+#             # iterate into the "ranking" object to get the players
+#             rankings_data = list(d.values())[3]
+
+#             # Save the JSON response to a file
+#             with open("../test/oetv-rankings.json", "w") as file:
+#                 rankings_data_write = str(rankings_data).replace("'", '"')
+#                 rankings_data_write = rankings_data_write.replace("False", '"False"')
+#                 file.write(str(rankings_data_write))
+
+#         else:
+#             handle_error(r.status_code)
+
+#     except Exception as e:
+#         handle_error(e)
+
+#     return rankings_data
 
 
 def parse():
@@ -88,4 +139,5 @@ def parse():
 
 
 if __name__ == "__main__":
-    parse()
+    # parse()
+    main()
