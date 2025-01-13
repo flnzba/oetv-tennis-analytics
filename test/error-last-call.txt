@@ -1,1 +1,10 @@
-Error: Failed to perform, curl: (1) Protocol "ttps" not supported. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+Error: list indices must be integers or slices, not dict 
+Error: list indices must be integers or slices, not dict 
+Error: list indices must be integers or slices, not dict 
+Error: I/O operation on closed file. 
+Error: list indices must be integers or slices, not dict 
+Error: list indices must be integers or slices, not dict 
+Error: list indices must be integers or slices, not dict 
+Error: 'list' object has no attribute 'values' 
+Error: 'list' object has no attribute 'values' 
+Error: 'list' object has no attribute 'values' 
