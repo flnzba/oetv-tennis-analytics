@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
 import json
 
 
@@ -28,13 +27,14 @@ st.write(
 st.dataframe(df)
 
 # Create a 2x2 grid for the plots
-fig, axs = plt.subplots(2, 2, figsize=(15, 10))  # Adjust the figure size as needed
+fig, axs = plt.subplots(2, 2, figsize=(20, 20))  # Adjust the figure size as needed
 
 # Plot 1: Bar Chart of ATP Points
-top_players = df.sort_values(by="points", ascending=False).head(10)
+top_players = df.sort_values(by="points", ascending=False).head(100).tail(20)
 axs[0, 0].bar(top_players["lastname"], top_players["points"], color="skyblue")
 axs[0, 0].set_title("Points of Top Players")
 axs[0, 0].set_xticklabels(top_players["lastname"], rotation=45, ha="right")
+axs[0, 0].set_xticks(range(len(top_players["lastname"])))
 
 # Plot 2: Pie Chart of Federation Nicknames
 fed_counts = df["fedNickname"].value_counts()
