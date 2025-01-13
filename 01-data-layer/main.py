@@ -75,8 +75,13 @@ def parse():
         with open("../test/oetv-rankings.json", "r") as file:
             data = json.load(file)
 
-        for i in data:
-            print(i)
+        # Iterate over dictionary items
+        for index, player in enumerate(data):
+            if isinstance(player, dict):
+                print(f"Player {index + 1}:")
+                for key, value in player.items():
+                    print(f"  {key}: {value}")
+                print("-" * 50)
 
     except Exception as e:
         handle_error(e)

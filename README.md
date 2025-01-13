@@ -57,9 +57,14 @@ The application is built on a somewhat 3-layer architecture:
    pip install -r requirements.txt
    ```
 
-4. **Run the Application**
+4. **Cd into the presentation-layer folder**
    ```bash
-   bash start-app.sh
+   cd 03-presentation-layer
+   ```
+
+5. **Run the Application**
+   ```bash
+   streamlit run app.py
    ```
    Access the app at `http://localhost:8501`.
 
