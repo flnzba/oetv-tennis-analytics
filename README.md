@@ -26,6 +26,16 @@ Optional:
 - Docker (for containerized deployment)
 - node (if you want to test the fetch directly via js -> app.js)
 
+## Side Info
+- app.js is a testing script to fetch directly via js to make sure the response is correct
+- app.py is the main script to fetch the data and store it in a sqlite database
+
+## Structure
+The application is built on a somewhat 3-layer architecture:
+- **Data Layer**: This layer is responsible for fetching the data from the ÖTV website and storing it as backup in a json.
+- **Business Layer**: This layer is responsible for processing the data and performing any necessary calculations. We also load and transform the data from json to a SQLite database in this layer.
+- **Presentation Layer**: This layer is responsible for displaying the data in a user-friendly format using Streamlit.
+
 ## Installation
 
 ### Option 1: Manual Installation
@@ -92,6 +102,9 @@ Project Link: [https://github.com/flnzba/oetv-tennis-ranking-scraper](https://gi
 
 ---
 
-# Side Info
-- app.js is a testing script to fetch directly via js to make sure the response is correct
-- app.py is the main script to fetch the data and store it in a sqlite database
+# Links
+- curl_cffi: https://curl-cffi.readthedocs.io/en/latest/api.html#headers
+- requests: https://docs.python-requests.org/en/master/user/quickstart/
+- streamlit: https://docs.streamlit.io/
+- sqlite: https://docs.python.org/3/library/sqlite3.html
+- pydantic: https://docs.pydantic.dev/2.10/

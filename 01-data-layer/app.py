@@ -7,7 +7,7 @@ import os
 
 def handle_error(status_code):
     print("Error: ", status_code)
-    with open("./test/error-last-call.txt", "w") as file:
+    with open("../test/error-last-call.txt", "w") as file:
         file.write(f"Error: {status_code}")
 
 
@@ -39,7 +39,7 @@ try:
     c = requests.Session()
 
     if r.status_code == 200:
-        with open("./test/oetv.json", "w") as file:
+        with open("../test/oetv.json", "w") as file:
             file.write(r.text)
     else:
         handle_error(r.status_code)
