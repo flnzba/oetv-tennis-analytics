@@ -112,4 +112,6 @@ Project Link: [https://github.com/flnzba/oetv-tennis-ranking-scraper](https://gi
 - requests: https://docs.python-requests.org/en/master/user/quickstart/
 - streamlit: https://docs.streamlit.io/
 - sqlite: https://docs.python.org/3/library/sqlite3.html
+- sqlite JSON Functions: https://www.sqlite.org/json1.html
 - pydantic: https://docs.pydantic.dev/2.10/
+- matplotlib: https://matplotlib.org/stable/contents.html
