@@ -21,8 +21,10 @@ This application is designed to scrape ranking data from the ÖTV website, store
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
-- Python 3.8+
-- Docker (optional, for containerized deployment)
+- Python 3.12.7+
+Optional:
+- Docker (for containerized deployment)
+- node (if you want to test the fetch directly via js -> app.js)
 
 ## Installation
 
