@@ -59,7 +59,7 @@ The application is built on a somewhat 3-layer architecture:
 
 4. **Run the Application**
    ```bash
-   streamlit run app.py
+   bash start-app.sh
    ```
    Access the app at `http://localhost:8501`.
 
@@ -67,12 +67,12 @@ The application is built on a somewhat 3-layer architecture:
 
 1. **Build the Docker Image**
    ```bash
-   docker build -t oetv-tennis-streamlit .
+   docker build -t oetv-tennis-analytics .
    ```
 
 2. **Run the Container**
    ```bash
-   docker run -p 8501:8501 oetv-tennis-streamlit
+   docker run -p 8501:8501 oetv-tennis-analytics
    ```
    Access the app at `http://localhost:8501`.
 
