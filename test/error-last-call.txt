@@ -21,3 +21,10 @@ Error: property 'text' of 'Response' object has no setter
 Error: 'dict' object has no attribute 'replace' 
 Error: 'str' object has no attribute 'text' 
 Error: Failed to perform, curl: (23) Failure writing output to destination, passed 17 returned 0. See https://curl.se/libcurl/c/libcurl-errors.html first for more details. 
+Error: cannot access local variable 'rankings_data' where it is not associated with a value 
+Error: 'str' object has no attribute 'read' 
+Error: cannot access local variable 'rankings_data' where it is not associated with a value 
+Error: the JSON object must be str, bytes or bytearray, not list 
+Error: 'list' object has no attribute 'values' 
+Error: 3 
+Error: 'dict_values' object is not subscriptable 
