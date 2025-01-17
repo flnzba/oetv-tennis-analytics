@@ -1,6 +1,5 @@
 from curl_cffi import requests  # type: ignore
 import json
-import os
 
 # no additional crawling library needed
 # crawling the response (json) directly
@@ -74,17 +73,18 @@ def main():
                 handle_error(r.status_code)
                 break
 
-        # Save the JSON response to a file
-        with open("../test/oetv-rankings.json", "w") as file:
-            rankings_data_write = str(all_rankings)
-            rankings_data_write = rankings_data_write.replace("False", '"False"')
-            rankings_data_write = rankings_data_write.replace("True", '"True"')
-            rankings_data_write = rankings_data_write.replace("O'Brien", "O Brien")
-            rankings_data_write = rankings_data_write.replace("D'ans", "D Ans")
-            rankings_data_write = rankings_data_write.replace("'", '"')
-            file.write(rankings_data_write)
+        # # Save the JSON response to a file
+        # with open("../test/oetv-rankings.json", "w") as file:
+        #     rankings_data_write = str(all_rankings)
+        #     rankings_data_write = rankings_data_write.replace("False", '"False"')
+        #     rankings_data_write = rankings_data_write.replace("True", '"True"')
+        #     rankings_data_write = rankings_data_write.replace("O'Brien", "O Brien")
+        #     rankings_data_write = rankings_data_write.replace("D'ans", "D Ans")
+        #     rankings_data_write = rankings_data_write.replace("'", '"')
+        #     file.write(rankings_data_write)
     except Exception as e:
         handle_error(e)
+    return all_rankings
 
 
 # def main():
@@ -126,7 +126,7 @@ def parse():
         with open("../test/oetv-rankings.json", "r") as file:
             data = json.load(file)
 
-        # Iterate over dictionary items
+        # Just for printing: Iterate over dictionary items
         for index, player in enumerate(data):
             if isinstance(player, dict):
                 print(f"Player {index + 1}:")
