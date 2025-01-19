@@ -120,6 +120,7 @@ Project Link: [https://github.com/flnzba/oetv-tennis-ranking-scraper](https://gi
 - [x] Create a Streamlit App
 - [x] Create a SQLite Database
 - [ ] Find a way to design nice dashboard (streamlit and py libraries are not that beautiful)
+- [ ] Dockerize the application and deploy
 - [ ] Pydantic -> Load Data directly to DB -> JSON Formatting problems
    - [ ] Load Data from Db instead of JSON
    - [x] "O'Brien" is destroying the json file
