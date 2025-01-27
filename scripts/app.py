@@ -18,9 +18,6 @@ data = load_data()
 # Convert data to DataFrame
 df = pd.DataFrame(data)
 
-# Set Streamlit Layout to wide
-st.set_page_config(layout="wide")
-
 # Display data in a table
 st.title("Tennis Player Rankings")
 st.write(
@@ -28,26 +25,6 @@ st.write(
 )
 
 st.dataframe(df)
-
-# Column Layouts
-col1, col2 = st.beta_columns((1,1))
-col3, col4 = st.beta_columns((1,1))
-
-with col1:
-    # Add chart #1
-    st.dataframe(df)
-
-with col2:
-    # Add chart #1
-    st.dataframe(df)
-
-with col3:
-    # Add chart #4
-    st.dataframe(df)
-
-with col4:
-    # Add chart #4
-    st.dataframe(df)
 
 # Create a 2x2 grid for the plots
 fig, axs = plt.subplots(2, 2, figsize=(20, 20))  # Adjust the figure size as needed
