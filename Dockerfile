@@ -18,7 +18,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Copy files
-COPY app.py /app.py
+COPY . .
 
 # Expose port
 EXPOSE 8501

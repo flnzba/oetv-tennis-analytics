@@ -16,15 +16,15 @@ st.set_page_config(page_title="Tennis Rankings Dashboard", layout="wide")
 st.sidebar.header("Filter Options")
 rank_filter_min = st.sidebar.number_input(
     "Min Rank",
-    min_value=int(df["fedRank"].min()),
-    max_value=int(df["fedRank"].max()),
-    value=int(df["fedRank"].min()),
+    min_value=1.0,
+    max_value=float(df["fedRank"].max()),
+    value=1.0,
 )
 rank_filter_max = st.sidebar.number_input(
     "Max Rank",
-    min_value=int(df["fedRank"].min()),
-    max_value=int(df["fedRank"].max()),
-    value=20,
+    min_value=rank_filter_min,
+    max_value=float(df["fedRank"].max()),
+    value=10.0,
 )
 rank_filter = (rank_filter_min, rank_filter_max)
 
