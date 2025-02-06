@@ -1,0 +1,6 @@
+[client]
+showErrorDetails = "full"
+
+[global]
+disableWidgetStateDuplicationWarning = false
+showWarningOnDirectExecution = false

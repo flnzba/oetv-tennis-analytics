@@ -1,58 +1,134 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 import json
 
+# Load JSON data
+with open("../test/oetv-rankings.json", "r") as f:
+    data = json.load(f)
 
-# Load JSON data from the file
-# @st.cache_data
-def load_data():
-    with open("../test/oetv-rankings.json", "r") as file:
-        data = json.load(file)
-    return data
-
-
-data = load_data()
-
-# Convert data to DataFrame
 df = pd.DataFrame(data)
 
-# Display data in a table
-st.title("Tennis Player Rankings")
-st.write(
-    "This table displays the rankings of tennis players as recorded in the JSON data file."
+# Streamlit page config
+st.set_page_config(page_title="Tennis Rankings Dashboard", layout="wide")
+
+# Sidebar Filters
+st.sidebar.header("Filter Options")
+rank_filter_min = st.sidebar.number_input(
+    "Min Rank",
+    min_value=int(df["natRank"].min()),
+    max_value=int(df["natRank"].max()),
+    value=int(df["natRank"].min()),
+)
+rank_filter_max = st.sidebar.number_input(
+    "Max Rank",
+    min_value=int(df["natRank"].min()),
+    max_value=int(df["natRank"].max()),
+    value=20,
+)
+rank_filter = (rank_filter_min, rank_filter_max)
+
+age_filter = st.sidebar.slider(
+    "Filter by Age Spectrum",
+    min_value=int(df["birthYear"].min()),
+    max_value=int(df["birthYear"].max()),
+    value=(1990, int(df["birthYear"].max())),
 )
 
-st.dataframe(df)
+# Apply filters
+df_filtered = df[
+    (df["natRank"] >= rank_filter[0])
+    & (df["natRank"] <= rank_filter[1])
+    & (df["birthYear"] >= age_filter[0])
+    & (df["birthYear"] <= age_filter[1])
+    & (df["natRank"] <= rank_filter[1])
+    & (df["birthYear"] >= age_filter[0])
+    & (df["birthYear"] <= age_filter[1])
+]
 
-# Create a 2x2 grid for the plots
-fig, axs = plt.subplots(2, 2, figsize=(20, 20))  # Adjust the figure size as needed
+print(df_filtered.head(50))
 
-# Plot 1: Bar Chart of ATP Points
-top_players = df.sort_values(by="points", ascending=False).head(100).tail(20)
-axs[0, 0].bar(top_players["lastname"], top_players["points"], color="skyblue")
-axs[0, 0].set_title("Points of Top Players")
-axs[0, 0].set_xticklabels(top_players["lastname"], rotation=45, ha="right")
-axs[0, 0].set_xticks(range(len(top_players["lastname"])))
+# Custom TailwindCSS for styling
+st.markdown(
+    """
+    <style>
+    body {font-family: 'Inter', sans-serif;}
+    .main-title {font-size: 36px; font-weight: bold; color: #374151;}
+    .sub-title {font-size: 20px; color: #6B7280;}
+    .chart-container {background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 6px rgba(0,0,0,0.1);}
+    </style>
+""",
+    unsafe_allow_html=True,
+)
 
-# Plot 2: Pie Chart of Federation Nicknames
-fed_counts = df["fedNickname"].value_counts()
-axs[0, 1].pie(fed_counts, labels=fed_counts.index, autopct="%1.1f%%", startangle=90)
-axs[0, 1].set_title("Distribution of Players by Federation Nickname")
-axs[0, 1].axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
+# Dashboard Header
+st.markdown(
+    "<h1 class='main-title'>🎾 Tennis Rankings Dashboard</h1>", unsafe_allow_html=True
+)
+st.markdown(
+    "<p class='sub-title'>Visualizing ATP Player Rankings</p>", unsafe_allow_html=True
+)
 
-# Plot 3: Line Chart of Points by Birth Year
-avg_points_by_year = df.groupby("birthYear")["points"].mean()
-axs[1, 0].plot(avg_points_by_year.index, avg_points_by_year, marker="o", linestyle="-")
-axs[1, 0].set_title("Total Points by Birth Year")
-axs[1, 0].set_xlabel("Birth Year")
-axs[1, 0].set_ylabel("Average Points")
+# Another Row for more visualizations
+col3, col4 = st.columns(2)
 
-# Plot 4: Scatter Plot of ATP Points vs Total Points
-sns.scatterplot(data=df, x="atpPoints", y="points", ax=axs[1, 1])
-axs[1, 1].set_title("ATP Points vs Total Points")
+# Visualization 3: ATP Points Distribution (Bar Chart - Fixed)
+with col3:
+    st.subheader("ATP Points Distribution")
+    fig, ax = plt.subplots(figsize=(10, 10))  # Set the figure size
+    df_filtered_sorted = df_filtered.sort_values("atpPoints", ascending=False).head(10)
+    ax.bar(
+        df_filtered_sorted["lastname"], df_filtered_sorted["atpPoints"], color="crimson"
+    )
+    ax.set_xticks(range(len(df_filtered_sorted["lastname"])))
+    ax.set_xticklabels(df_filtered_sorted["lastname"], rotation=45, ha="right")
+    ax.set_ylabel("ATP Points")
+    ax.set_title("ATP Points by Players")
+    st.pyplot(fig)
 
-# Adjust layout and show the plots in Streamlit
-plt.tight_layout()
-st.pyplot(fig)
+# Visualization 4: Tournament Points Breakdown (Bar Chart)
+with col4:
+    st.subheader("Points Distribution")
+    fig, ax = plt.subplots(figsize=(10, 10))  # Set the figure size
+    df_filtered_sorted = df_filtered.sort_values("points", ascending=False).head(10)
+    ax.bar(
+        df_filtered_sorted["lastname"], df_filtered_sorted["points"], color="crimson"
+    )
+    ax.set_xticks(range(len(df_filtered_sorted["lastname"])))
+    ax.set_xticklabels(df_filtered_sorted["lastname"], rotation=45, ha="right")
+    ax.set_ylabel("Points")
+    ax.set_title("Points by Players")
+    st.pyplot(fig)
+
+# Another Row for more visualizations
+col5, col6 = st.columns(2)
+
+# Visualization 5: Federation Distribution (Bar Chart)
+with col5:
+    st.subheader("Federation Distribution")
+    fig, ax = plt.subplots(figsize=(10, 10))  # Set the figure size
+    df_filtered["fedNickname"].value_counts().plot(kind="bar", ax=ax, color="darkcyan")
+    ax.set_xlabel("Federation")
+    ax.set_ylabel("Number of Players")
+    ax.set_title("Players per Federation")
+    st.pyplot(fig)
+
+# Visualization 6: Birth Year Distribution (Donut Chart)
+with col6:
+    st.subheader("Birth Year Distribution")
+    fig, ax = plt.subplots(figsize=(10, 10))  # Set the figure size
+    df_filtered["birthYear"].value_counts().plot(
+        kind="pie",
+        autopct="%1.1f%%",
+        startangle=90,
+        cmap="coolwarm",
+        wedgeprops={"linewidth": 1, "edgecolor": "white"},
+        pctdistance=0.85,
+    )
+    ax.set_ylabel("")
+    st.pyplot(fig)
+
+st.markdown(
+    "<p class='sub-title'>Dashboard built by <a href='https://fzeba.com'> Florian Zeba <a/> 🎾 </p>",
+    unsafe_allow_html=True,
+)
