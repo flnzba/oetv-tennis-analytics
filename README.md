@@ -2,7 +2,7 @@
 
 This application is designed to scrape ranking data from the ÖTV website, store it locally in a SQLite database, and display the data through a bar chart on a Streamlit web app. This setup provides an easy-to-use interface for analyzing and visualizing the data, all containerized with Docker for easy deployment and scalability.
 
-
+![cover-oetv-analytics](https://github.com/user-attachments/assets/26f4b010-3ff7-49b2-994d-816a6e5f63d2)
 
 ## Features
 
