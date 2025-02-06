@@ -1,5 +1,4 @@
 import sqlite3
-import json
 from load import main
 
 # from pydantic import BaseModel as basem  # type: ignore

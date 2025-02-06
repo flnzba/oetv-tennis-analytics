@@ -16,14 +16,14 @@ st.set_page_config(page_title="Tennis Rankings Dashboard", layout="wide")
 st.sidebar.header("Filter Options")
 rank_filter_min = st.sidebar.number_input(
     "Min Rank",
-    min_value=int(df["natRank"].min()),
-    max_value=int(df["natRank"].max()),
-    value=int(df["natRank"].min()),
+    min_value=int(df["fedRank"].min()),
+    max_value=int(df["fedRank"].max()),
+    value=int(df["fedRank"].min()),
 )
 rank_filter_max = st.sidebar.number_input(
     "Max Rank",
-    min_value=int(df["natRank"].min()),
-    max_value=int(df["natRank"].max()),
+    min_value=int(df["fedRank"].min()),
+    max_value=int(df["fedRank"].max()),
     value=20,
 )
 rank_filter = (rank_filter_min, rank_filter_max)
@@ -37,11 +37,11 @@ age_filter = st.sidebar.slider(
 
 # Apply filters
 df_filtered = df[
-    (df["natRank"] >= rank_filter[0])
-    & (df["natRank"] <= rank_filter[1])
+    (df["fedRank"] >= rank_filter[0])
+    & (df["fedRank"] <= rank_filter[1])
     & (df["birthYear"] >= age_filter[0])
     & (df["birthYear"] <= age_filter[1])
-    & (df["natRank"] <= rank_filter[1])
+    & (df["fedRank"] <= rank_filter[1])
     & (df["birthYear"] >= age_filter[0])
     & (df["birthYear"] <= age_filter[1])
 ]

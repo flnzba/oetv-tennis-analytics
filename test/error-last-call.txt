@@ -28,3 +28,8 @@ Error: the JSON object must be str, bytes or bytearray, not list
 Error: 'list' object has no attribute 'values' 
 Error: 3 
 Error: 'dict_values' object is not subscriptable 
+Error: 'firstName' 
+Error: 'firstName' 
+Error: 'firstName' 
+Error: 'firstName' 
+Error: cannot access local variable 'total_results' where it is not associated with a value 

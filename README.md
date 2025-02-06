@@ -85,6 +85,10 @@ The application is built on a somewhat 3-layer architecture:
 
 After launching the app, the interface will allow you to view the bar chart representing the frequency of rankings from the ÖTV website. Data is refreshed each time the application is restarted, ensuring you always have the latest rankings displayed.
 
+- load.py -> Load the data from the source into a json file
+- transform.py -> Transform the data from the json file into a SQLite database
+- app.py -> Main application to display the data in a Streamlit web app
+
 ## Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.

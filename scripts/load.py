@@ -11,7 +11,7 @@ def handle_error(status_code):
         file.write(f"Error: {status_code} \n")
 
 
-url = "https://www.oetv.at/?oetvappapi=1&apikey=QWXWLwYAtSFvJGmyFtEMlypWS6fH71wk&method=nu-ranking&firstResult=0&ageRange=&subtype=general&region=&gender=male&type=oetv&itnFrom=&rankFrom=&search="
+url = "https://www.oetv.at/?oetvappapi=1&apikey=QWXWLwYAtSFvJGmyFtEMlypWS6fH71wk&method=nu-ranking&firstResult=0&ageRange=&subtype=general&region=&gender=male&type=itn&itnFrom=&rankFrom=&search="
 
 # change headers to your liking
 headers = {
@@ -41,39 +41,34 @@ def main():
 
     try:
         r = requests.get(url, headers=headers, referer=referer, impersonate="chrome")
-        # c = requests.Session()
-        # print(r.text)
+        if r.status_code == 200:
+            rankings_data = json.loads(r.text)
+            all_data = list(rankings_data.values())
+            all_data = list(all_data[1].values())
+            total_results = all_data[0]
 
-        while start < 8000:
+        while start <= total_results:
             paginated_url = url.replace("firstResult=0", f"firstResult={start}")
             r = requests.get(
-                paginated_url, headers=headers, referer=referer, impersonate="chrome"
+                paginated_url,
+                headers=headers,
+                referer=referer,
+                impersonate="chrome",
             )
 
-            if r.status_code == 200:
-                # # temporary file
-                # with open("../test/oetv.json", "w") as file:
-                #     file.write(r.text)
+            rankings_data = json.loads(r.text)
+            all_data = list(rankings_data.values())
+            data = all_data[1]
+            rankings_data = list(data.values())[3]
+            all_rankings.extend(rankings_data)
 
-                # Parse the JSON response
-                # iterate into the data objects
-                rankings_data = json.loads(r.text)
-                d = list(rankings_data.values())[1]
-                rankings_data = list(d.values())[3]
+            start += 100
 
-                if not rankings_data:
-                    break
-
-                all_rankings.extend(rankings_data)
-                start += 100
-
-                print(f"Item {start} fetched")
-            else:
-                handle_error(r.status_code)
-                break
+            print(f"Item {start} fetched")
 
     except Exception as e:
         handle_error(e)
+        handle_error(r.status_code)
     return all_rankings
 
 
@@ -81,7 +76,7 @@ def main():
 def jsoncreate(all_rankings):
     try:
         # Save the JSON response to a file
-        with open("../test/oetv-rankings.json", "w") as file:
+        with open("../test/rankings.json", "w") as file:
 
             rankings_data_write = str(all_rankings)
             rankings_data_write = rankings_data_write.replace("False", '"False"')
