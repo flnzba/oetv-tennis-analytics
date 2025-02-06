@@ -46,8 +46,6 @@ df_filtered = df[
     & (df["birthYear"] <= age_filter[1])
 ]
 
-print(df_filtered.head(50))
-
 # Custom TailwindCSS for styling
 st.markdown(
     """
