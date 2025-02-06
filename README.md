@@ -2,6 +2,8 @@
 
 This application is designed to scrape ranking data from the ÖTV website, store it locally in a SQLite database, and display the data through a bar chart on a Streamlit web app. This setup provides an easy-to-use interface for analyzing and visualizing the data, all containerized with Docker for easy deployment and scalability.
 
+
+
 ## Features
 
 - **Web Scraping**: Automatically scrapes data from the specified ÖTV rankings webpage.
@@ -123,11 +125,14 @@ Project Link: [https://github.com/flnzba/oetv-tennis-ranking-scraper](https://gi
 ## TODOs
 - [x] Create a Streamlit App
 - [x] Create a SQLite Database
-- [ ] Find a way to design nice dashboard (streamlit and py libraries are not that beautiful)
-- [ ] Dockerize the application and deploy
+- [ ] Scrape all data from the ÖTV Website approx 93k players - currently break at 62k
+- [x] Find a way to design nice dashboard (streamlit and py libraries are not that beautiful)
+- [x] Dockerize the application
+- [ ] Add more analytics
+- [ ] Deploy on VPS with custom domain
 - [ ] Pydantic -> Load Data directly to DB -> JSON Formatting problems
-   - [ ] Load Data from Db instead of JSON
+   - [x] Load Data from Db instead of JSON
    - [x] "O'Brien" is destroying the json file
    - [x] "D'ans" is destroying the json file
-- [ ] Optimize Main Loop to crawl dynamically more than 8000 items
-- [ ] Add more visualizations
+- [x] Optimize Main Loop to crawl dynamically more than 8000 items
+- [x] Add more visualizations
