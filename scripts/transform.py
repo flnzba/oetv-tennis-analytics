@@ -11,7 +11,7 @@ from load import main
 data = main()
 
 # Connect to SQLite database (or create it if it doesn't exist)
-conn = sqlite3.connect("data.db")
+conn = sqlite3.connect("scripts/data.db")
 c = conn.cursor()
 
 # Drop table if it exists

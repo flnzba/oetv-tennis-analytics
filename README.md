@@ -38,6 +38,8 @@ The application is built on a somewhat 3-layer architecture:
 - **Business Layer**: This layer is responsible for processing the data and performing any necessary calculations. We also load and transform the data from json to a SQLite database in this layer.
 - **Presentation Layer**: This layer is responsible for displaying the data in a user-friendly format using Streamlit.
 
+The 3-layer structure was chosen to separate concerns and make the application more modular and maintainable. It was applied by creating different folders for each layer and placing the relevant scripts in their respective folders. Now the 3-layer architecture is just the scripts in the scripts folder (without the folder structure). This was done because there were path problems with the imports.
+
 ## Installation
 
 ### Option 1: Manual Installation
@@ -61,7 +63,7 @@ The application is built on a somewhat 3-layer architecture:
 
 4. **Cd into the presentation-layer folder**
    ```bash
-   cd 03-presentation-layer
+   cd scripts
    ```
 
 5. **Run the Application**
@@ -72,10 +74,11 @@ The application is built on a somewhat 3-layer architecture:
 
 ### Option 2: Docker Installation
 
-1. **Build the Docker Image**
+1. **Build the Docker Image** (from the root directory)
    ```bash
    docker build -t oetv-tennis-analytics .
    ```
+   You can name the docker image how you want (after `-t`). The `.` at the end is important.
 
 2. **Run the Container**
    ```bash

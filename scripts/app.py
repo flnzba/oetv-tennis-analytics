@@ -10,7 +10,7 @@ import sqlite3
 #     data = json.load(f)
 
 # Load data from SQLite database
-conn = sqlite3.connect("data.db")
+conn = sqlite3.connect("scripts/data.db")
 query = "SELECT * FROM players"
 data = pd.read_sql_query(query, conn)
 conn.close()
