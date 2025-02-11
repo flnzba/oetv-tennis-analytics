@@ -86,6 +86,8 @@ The 3-layer structure was chosen to separate concerns and make the application m
    ```
    Access the app at `http://localhost:8501`.
 
+
+
 ## Usage
 
 After launching the app, the interface will allow you to view the bar chart representing the frequency of rankings from the ÖTV website. Data is refreshed each time the application is restarted, ensuring you always have the latest rankings displayed.
