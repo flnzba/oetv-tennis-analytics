@@ -86,7 +86,9 @@ The 3-layer structure was chosen to separate concerns and make the application m
    ```
    Access the app at `http://localhost:8501`.
 
+![Images Example](https://github.com/user-attachments/assets/349203b8-7a70-4278-b0e1-c9378799fa1d)
 
+![Container Example](https://github.com/user-attachments/assets/5b2574e6-57ab-4ce5-a8d2-78988ebf012d)
 
 ## Usage
 
