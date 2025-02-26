@@ -3,7 +3,7 @@ import json
 import time
 import random
 import os
-from pathlib import Path
+from datetime import datetime
 
 # no additional crawling library needed
 # crawling the response (json) directly
@@ -11,8 +11,11 @@ from pathlib import Path
 
 def handle_error(status_code):
     print("Error: ", status_code)
-    os.makedirs("../test", exist_ok=True)
-    with open("../test/error-last-call.txt", "a") as file:
+    # Get the base directory from environment or use a default
+    DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+    log_dir = os.path.join(DATA_DIR, "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    with open(os.path.join(log_dir, "error-last-call.txt"), "a") as file:
         file.write(f"Error: {status_code} \n")
 
 
@@ -36,26 +39,28 @@ referer = "https://www.oetv.at/rangliste/"
 
 
 def get_checkpoint_file():
-    os.makedirs("../test", exist_ok=True)
-    return "../test/checkpoint.txt"
+    # Get the base directory from environment or use a default
+    # This allows configuration in Docker environments
+    DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+    checkpoint_dir = os.path.join(DATA_DIR, "checkpoints")
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    return os.path.join(checkpoint_dir, "checkpoint.txt")
 
 
-def save_checkpoint(start, all_rankings):
+def save_checkpoint(start, all_rankings=None):
     with open(get_checkpoint_file(), "w") as f:
         f.write(str(start))
     
     # Optionally save the current rankings as backup
     if all_rankings:
-        temp_path = "../test/rankings_checkpoint.json"
+        # Get the base directory from environment or use a default
+        DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+        checkpoint_dir = os.path.join(DATA_DIR, "checkpoints")
+        os.makedirs(checkpoint_dir, exist_ok=True)
+        temp_path = os.path.join(checkpoint_dir, "rankings_checkpoint.json")
         try:
             with open(temp_path, "w") as file:
-                rankings_data_write = str(all_rankings)
-                rankings_data_write = rankings_data_write.replace("False", '"False"')
-                rankings_data_write = rankings_data_write.replace("True", '"True"')
-                rankings_data_write = rankings_data_write.replace("O'Brien", "O Brien")
-                rankings_data_write = rankings_data_write.replace("D'ans", "D Ans")
-                rankings_data_write = rankings_data_write.replace("'", '"')
-                file.write(rankings_data_write)
+                json.dump(all_rankings, file)
         except Exception as e:
             print(f"Error saving rankings checkpoint: {e}")
 
@@ -67,26 +72,45 @@ def load_checkpoint():
     return 0
 
 
-def main():
-    all_rankings = []
+def setup_api_client():
+    """Set up and return client configuration for API requests"""
+    return {
+        'url': url,
+        'headers': headers,
+        'referer': referer,
+        'timeout': 30,  # seconds
+        'max_retries': 5,
+        'base_delay': 1.0
+    }
+
+
+def get_data_batches(client):
+    """Generator function that yields batches of player data as they're fetched.
+    
+    Parameters:
+    - client: Dictionary containing API client configuration
+    
+    Yields:
+    - Batch of player records (list of dictionaries)
+    """
     start = load_checkpoint()
     total_results = 0
-    max_retries = 5
-    request_timeout = 30  # seconds
+    consecutive_errors = 0
+    max_consecutive_errors = 3
     
-    print(f"Starting from position {start}")
+    print(f"Starting batch fetching from position {start} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     try:
         # First request to get total results
         retries = 0
-        while retries < max_retries:
+        while retries < client['max_retries']:
             try:
                 r = requests.get(
-                    url, 
-                    headers=headers, 
-                    referer=referer, 
+                    client['url'], 
+                    headers=client['headers'], 
+                    referer=client['referer'], 
                     impersonate="chrome",
-                    timeout=request_timeout
+                    timeout=client['timeout']
                 )
                 if r.status_code == 200:
                     rankings_data = json.loads(r.text)
@@ -104,62 +128,182 @@ def main():
                 retries += 1
                 time.sleep(5 * retries)
         
-        if retries >= max_retries:
+        if retries >= client['max_retries']:
             raise Exception("Maximum retries exceeded on initial request")
 
         # Main pagination loop
+        base_delay = client['base_delay']
         while start <= total_results:
-            paginated_url = url.replace("firstResult=0", f"firstResult={start}")
+            paginated_url = client['url'].replace("firstResult=0", f"firstResult={start}")
             retries = 0
             success = False
             
-            while retries < max_retries and not success:
+            while retries < client['max_retries'] and not success:
                 try:
                     r = requests.get(
                         paginated_url,
-                        headers=headers,
-                        referer=referer,
+                        headers=client['headers'],
+                        referer=client['referer'],
                         impersonate="chrome",
-                        timeout=request_timeout
+                        timeout=client['timeout']
                     )
                     
                     if r.status_code == 200:
-                        rankings_data = json.loads(r.text)
-                        all_data = list(rankings_data.values())
-                        data = all_data[1]
-                        rankings_data = list(data.values())[3]
-                        all_rankings.extend(rankings_data)
-                        
-                        start += 100
-                        save_checkpoint(start, all_rankings)
-                        
-                        print(f"Item {start} fetched. Total items so far: {len(all_rankings)}")
-                        success = True
-                        
-                        # Add a random delay between requests to avoid rate limiting
-                        time.sleep(random.uniform(0.5, 2.0))
+                        try:
+                            # Debug: save raw response for analysis if needed
+                            if start > 90000 and start < 95000:
+                                # Get the base directory from environment or use a default
+                                DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+                                debug_dir = os.path.join(DATA_DIR, "debug")
+                                os.makedirs(debug_dir, exist_ok=True)
+                                with open(os.path.join(debug_dir, f"debug_response_{start}.json"), "w") as f:
+                                    f.write(r.text)
+                            
+                            rankings_data = json.loads(r.text)
+                            
+                            # Validate structure and adapt to different response formats
+                            if isinstance(rankings_data, dict):
+                                all_data = list(rankings_data.values())
+                                
+                                # Check if structure matches expected format
+                                if len(all_data) > 1 and isinstance(all_data[1], dict):
+                                    data = all_data[1]
+                                    values_list = list(data.values())
+                                    
+                                    if len(values_list) > 3 and isinstance(values_list[3], list):
+                                        rankings_data = values_list[3]
+                                    else:
+                                        # Try to find a list in the values that contains player data
+                                        for item in values_list:
+                                            if isinstance(item, list) and len(item) > 0 and isinstance(item[0], dict) and "playerId" in item[0]:
+                                                rankings_data = item
+                                                break
+                                else:
+                                    # Try alternative parsing: find any list with player data
+                                    for key, value in rankings_data.items():
+                                        if isinstance(value, dict):
+                                            for subkey, subvalue in value.items():
+                                                if isinstance(subvalue, list) and len(subvalue) > 0 and isinstance(subvalue[0], dict) and "playerId" in subvalue[0]:
+                                                    rankings_data = subvalue
+                                                    break
+                            elif isinstance(rankings_data, list):
+                                # The response might already be a list of players
+                                # Check if it looks like player data
+                                if len(rankings_data) > 0 and isinstance(rankings_data[0], dict) and "playerId" in rankings_data[0]:
+                                    # It's already in the format we need
+                                    pass
+                                else:
+                                    # Not recognized format
+                                    raise ValueError(f"Unrecognized list format in response at position {start}")
+                            else:
+                                raise ValueError(f"Unexpected response type: {type(rankings_data)}")
+                            
+                            # Final validation - ensure we have a list of player dictionaries
+                            if not isinstance(rankings_data, list):
+                                raise ValueError(f"Failed to extract player list from response at position {start}")
+                            
+                            # Validate that the extracted data has the expected structure
+                            if len(rankings_data) > 0 and isinstance(rankings_data[0], dict) and "playerId" in rankings_data[0]:
+                                # Yield this batch of players
+                                print(f"Yielding batch of {len(rankings_data)} records from position {start}")
+                                yield rankings_data
+                            else:
+                                raise ValueError(f"Extracted data doesn't match expected player format at position {start}")
+                            
+                            # Update position for next batch
+                            start += 100
+                            save_checkpoint(start)
+                            
+                            print(f"Batch at position {start} fetched")
+                            success = True
+                            
+                            # Dynamically adjust delay based on success pattern
+                            if consecutive_errors > 0:
+                                consecutive_errors = 0
+                                # Increase delay slightly after recovering from errors
+                                base_delay = min(base_delay * 1.2, 5.0)
+                            else:
+                                # Gradually decrease delay on consistent success
+                                base_delay = max(base_delay * 0.9, 0.5)
+                                
+                            # Add some randomness to the delay
+                            time.sleep(base_delay + random.uniform(0.1, 1.0))
+                        except Exception as parse_error:
+                            consecutive_errors += 1
+                            
+                            # Save the problematic response for debugging
+                            # Get the base directory from environment or use a default
+                            DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+                            debug_dir = os.path.join(DATA_DIR, "debug")
+                            os.makedirs(debug_dir, exist_ok=True)
+                            error_path = os.path.join(debug_dir, f"error_response_{start}.json")
+                            with open(error_path, "w") as f:
+                                f.write(r.text)
+                            print(f"Error parsing data at position {start}: {parse_error}")
+                            print(f"Saved problematic response to {error_path}")
+                            handle_error(f"Parse error at position {start}: {parse_error}")
+                            
+                            # Exponentially increase delay on consecutive errors
+                            retry_delay = base_delay * (2 ** retries)
+                            print(f"Backing off for {retry_delay:.2f} seconds before retry {retries+1}/{client['max_retries']}")
+                            time.sleep(retry_delay)
+                            
+                            # Try to continue with the next batch instead of completely failing
+                            retries += 1
+                            if retries >= client['max_retries']:
+                                # Skip this batch after max retries
+                                print(f"Skipping batch at position {start} after {client['max_retries']} failed attempts")
+                                start += 100
+                                save_checkpoint(start)
+                                success = True
+                                
+                                # Check if we're having too many consecutive errors
+                                if consecutive_errors >= max_consecutive_errors:
+                                    print(f"Too many consecutive errors ({consecutive_errors}). Taking a long break...")
+                                    time.sleep(60)  # Take a 1-minute break
                     else:
+                        consecutive_errors += 1
                         print(f"Error status code: {r.status_code}, retrying...")
+                        
+                        # Exponential backoff on HTTP errors
+                        retry_delay = 5 * (2 ** retries)
+                        print(f"Backing off for {retry_delay} seconds")
+                        time.sleep(retry_delay)
                         retries += 1
-                        time.sleep(5 * retries)  # Increasing backoff
                         
                 except Exception as e:
+                    consecutive_errors += 1
                     print(f"Exception during pagination: {e}")
+                    # Exponential backoff on exceptions
+                    retry_delay = 5 * (2 ** retries)
+                    print(f"Backing off for {retry_delay} seconds")
+                    time.sleep(retry_delay)
                     retries += 1
-                    time.sleep(5 * retries)
             
             if not success:
-                print(f"Failed to fetch data at position {start} after {max_retries} retries. Continuing...")
+                print(f"Failed to fetch data at position {start} after {client['max_retries']} retries. Continuing...")
                 start += 100  # Skip this batch and continue
-                save_checkpoint(start, all_rankings)
+                save_checkpoint(start)
 
     except Exception as e:
         print(f"Fatal error: {e}")
         handle_error(str(e))
-        # Still save what we have so far
-        save_checkpoint(start, all_rankings)
+        # Still save the checkpoint
+        save_checkpoint(start)
+        raise
     
-    print(f"Completed fetching {len(all_rankings)} records")
+    print(f"Completed fetching all records at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+
+def main():
+    """Legacy function for backward compatibility - fetches all data at once"""
+    all_rankings = []
+    client = setup_api_client()
+    
+    # Use the batch generator but collect all results
+    for batch in get_data_batches(client):
+        all_rankings.extend(batch)
+    
     return all_rankings
 
 
@@ -167,18 +311,12 @@ def main():
 def jsoncreate(all_rankings):
     try:
         # Save the JSON response to a file
-        os.makedirs("../test", exist_ok=True)
-        with open("../test/rankings.json", "w") as file:
-
-            rankings_data_write = str(all_rankings)
-            rankings_data_write = rankings_data_write.replace("False", '"False"')
-            rankings_data_write = rankings_data_write.replace("True", '"True"')
-            rankings_data_write = rankings_data_write.replace("O'Brien", "O Brien")
-            rankings_data_write = rankings_data_write.replace("D'ans", "D Ans")
-            rankings_data_write = rankings_data_write.replace("'", '"')
-
-            file.write(rankings_data_write)
-
+        # Get the base directory from environment or use a default
+        DATA_DIR = os.environ.get('DATA_DIR', os.path.dirname(os.path.abspath(__file__)))
+        data_dir = os.path.join(DATA_DIR, "data")
+        os.makedirs(data_dir, exist_ok=True)
+        with open(os.path.join(data_dir, "rankings.json"), "w") as file:
+            json.dump(all_rankings, file)
     except Exception as e:
         handle_error(e)
 
