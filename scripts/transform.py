@@ -1,11 +1,11 @@
 import sqlite3
 from load import main
-
+import json
 # from pydantic import BaseModel as basem  # type: ignore
 
 
 # # Load data from JSON file
-# with open("../test/oetv-rankings.json", "r") as file:
+# with open("../test/rankings_checkpoint.json", "r") as file:
 #     data = json.load(file)
 
 data = main()
