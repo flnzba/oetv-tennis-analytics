@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Data Visualization App with Streamlit
 
 This application is designed to scrape ranking data from the ÖTV website, store it locally in a SQLite database, and display the data through a bar chart on a Streamlit web app. This setup provides an easy-to-use interface for analyzing and visualizing the data, all containerized with Docker for easy deployment and scalability.
@@ -118,6 +119,19 @@ Florian Zeba - florian@fzeba.com
 
 Project Link: [https://github.com/flnzba/oetv-tennis-ranking-scraper](https://github.com/flnzba/oetv-tennis-ranking-scraper)
 
+=======
+---
+title: Streamlit Template Space
+emoji: 🚀
+colorFrom: red
+colorTo: red
+sdk: docker
+app_port: 8501
+tags:
+  - streamlit
+pinned: false
+short_description: Streamlit template space
+>>>>>>> parent of 30b837e (initial commit)
 ---
 
 # Links

@@ -20,6 +20,8 @@ def handle_error(status_code):
 
 
 url = "https://www.oetv.at/?oetvappapi=1&apikey=QWXWLwYAtSFvJGmyFtEMlypWS6fH71wk&method=nu-ranking&firstResult=0&ageRange=&subtype=general&region=&gender=male&type=itn&itnFrom=&rankFrom=&search="
+url = "https://www.oetv.at/?oetvappapi=1&apikey=QWXWLwYAtSFvJGmyFtEMlypWS6fH71wk&method=nu-ranking&firstResult=0&ageRange=&subtype=undefined&region=&gender=&type=itn&itnFrom=&rankFrom=&search="
+
 
 # change headers to your liking
 headers = {
